@@ -1,0 +1,7 @@
+round_id,gate,status,review_evidence
+R1,source_integrity,UNKNOWN,
+R1,data_audit,UNKNOWN,
+R1,model_integrity,UNKNOWN,
+R1,industry_coverage,UNKNOWN,
+R1,counterevidence,UNKNOWN,
+R1,visual_editorial,UNKNOWN,
