@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import math
 from collections import defaultdict
 from pathlib import Path
 
@@ -48,7 +49,7 @@ def evaluate(scores: Path, gates: Path) -> dict:
         except ValueError:
             errors.append(f"{rid}/{criterion}: score missing or invalid")
             continue
-        if score != score or not 0 <= score <= 5 or round(score * 10) != score * 10:
+        if not math.isfinite(score) or not 0 <= score <= 5 or abs(score * 10 - round(score * 10)) > 1e-8:
             errors.append(f"{rid}/{criterion}: score must be 0..5 with at most one decimal")
             continue
         if not row["evidence_refs"].strip() or not row["next_action"].strip():
