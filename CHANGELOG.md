@@ -1,5 +1,13 @@
 # Changelog
 
+## v2.4.0 — Quality Scoring Loop (2026-11-13)
+
+- Added eight-dimension weighted review (100 points), human scoring evidence, six non-negotiable quality gates and round-by-round history.
+- Introduced `references/16-quality-loop.md`, CSV templates and `scripts/score_report.py` for deterministic arithmetic, priority queue and score deltas.
+- Integrated scorecards and gates into full-industry `run_qa.py`; a good score does not override failed/unknown audits or imply factual certification.
+- Added unit tests for weighted scoring, incomplete records, blocked status and revision deltas.
+
+
 ## v2.3.0 — Research Quality Upgrade (2026-11-09)
 
 - Added four reference protocols: `12-data-audit.md`, `13-independent-modeling.md`, `14-analytical-depth.md`, `15-visualization.md`.
