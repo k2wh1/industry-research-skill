@@ -1,0 +1,11 @@
+metric_id,entity,metric,period,period_type,currency,unit,basis,value,evidence_id,observation_kind,publish_date
+EX01,illustrative equipment market,category 1,CY2025,CY,USD,亿元,illustrative split,285,E001,estimate,2026-01-01
+EX02,illustrative equipment market,category 2,CY2025,CY,USD,亿元,illustrative split,250,E001,estimate,2026-01-01
+EX03,illustrative equipment market,category 3,CY2025,CY,USD,亿元,illustrative split,220,E001,estimate,2026-01-01
+EX04,illustrative equipment market,category 4,CY2025,CY,USD,亿元,illustrative split,150,E001,estimate,2026-01-01
+EX05,illustrative equipment market,category 5,CY2025,CY,USD,亿元,illustrative split,85,E001,estimate,2026-01-01
+EX06,illustrative equipment market,category 6,CY2025,CY,USD,亿元,illustrative split,55,E001,estimate,2026-01-01
+EX07,illustrative equipment market,category 7,CY2025,CY,USD,亿元,illustrative split,55,E001,estimate,2026-01-01
+EX08,illustrative equipment market,category 8,CY2025,CY,USD,亿元,illustrative split,45,E001,estimate,2026-01-01
+EX09,illustrative equipment market,category 9,CY2025,CY,USD,亿元,illustrative split,40,E001,estimate,2026-01-01
+EX_TOTAL,illustrative equipment market,reported sum,CY2025,CY,USD,亿元,illustrative split,1165,E001,estimate,2026-01-01

@@ -1,0 +1,2 @@
+[ERROR] CHECK_SUM: reported 1165, calculated 1185.00000000 亿元 (difference 20.00000000)
+Exit status: 1 (expected: deliberately inconsistent sample)

@@ -1,0 +1,2 @@
+check_id,op,target_id,input_ids,tolerance_abs,tolerance_rel,notes
+CHECK_SUM,sum,EX_TOTAL,EX01;EX02;EX03;EX04;EX05;EX06;EX07;EX08;EX09,0,0,Expected error in intentionally inconsistent input

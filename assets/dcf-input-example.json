@@ -1,0 +1,17 @@
+{
+  "company": "FICTIONAL_EXAMPLE_NOT_A_REAL_COMPANY",
+  "currency": "USD",
+  "amount_unit": "million",
+  "forecast_fcff": [100, 120, 140, 155, 170],
+  "wacc": 0.10,
+  "terminal_growth": 0.025,
+  "net_debt": 300,
+  "other_equity_adjustments": 0,
+  "diluted_shares": 100,
+  "discount_timing": "year_end",
+  "sensitivity": {
+    "wacc_delta": [-0.01, 0, 0.01],
+    "growth_delta": [-0.005, 0, 0.005]
+  },
+  "note": "ALL NUMBERS ARE HYPOTHETICAL; use only for method verification."
+}

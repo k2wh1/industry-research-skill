@@ -1,0 +1,22 @@
+{
+  "models": [
+    {
+      "model_id": "M01",
+      "research_question": "终端需求如何转化为行业设备支出？",
+      "formula": "customer_new_capacity * equipment_per_capacity + replacement_capex",
+      "model_file": "models/demand_model.csv",
+      "output_metric": "industry_equipment_spending",
+      "units_and_scope": "USD million; CY; specified equipment categories and regions",
+      "inputs": [
+        {"variable": "customer_new_capacity", "unit": "wafers_per_month", "origin": "source", "evidence_id": "E001"},
+        {"variable": "equipment_per_capacity", "unit": "USD_million_per_wpm", "origin": "assumption"}
+      ],
+      "calibration_targets": ["observed_2024_market_total"],
+      "validation_targets": ["observed_2025_market_total"],
+      "input_target_ids": ["observed_2024_market_total"],
+      "claims_independent_validation": false,
+      "validation_period": "CY2025",
+      "reconciliation_notes": "示例：需记录误差及预测与市场总量之间差异；模板里的输入和文件均为占位信息。"
+    }
+  ]
+}
