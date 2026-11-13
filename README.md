@@ -1,4 +1,4 @@
-# industry-research v2.3 — 行业研究、公司研究与投资研究 Skill
+# industry-research v2.4 — 行业研究、公司研究与投资研究 Skill
 
 面向 Codex 及兼容 [Agent Skills](https://agentskills.io/specification) 的工具。以「核心争议 → 证据 → 产业/竞争 → 公司经营 → 财务预测 → 市场预期与估值 → 证伪与跟踪」为研究主线，而非把长报告目录填满。
 
@@ -20,6 +20,18 @@ investment_research_copilot/
 **个人级安装**：`$HOME/.agents/skills/industry-research/`。Windows PowerShell 里 `$HOME` 指 Windows 用户主目录；在 WSL2 Ubuntu 里 `$HOME` 是 Linux 的用户主目录，二者不同。
 
 无需 Python 包依赖（仅运行本包脚本需要 Python 3.10+）。Codex 可通过 `$industry-research` 明确调用；如果没有识别，重新启动 Codex 或确认工作目录位于对应项目树中。参见 [Codex Skill 官方文档](https://learn.chatgpt.com/docs/build-skills)。
+
+## v2.4：质量评分—研究迭代闭环
+
+新增 `references/16-quality-loop.md`、`scripts/score_report.py` 以及评分和发布门槛模板。
+
+流程：**初稿 → 数据审计 → 八维评分（100分）→ 诊断 → 定向修订 → 重新评分 → 人工终审**。评分必须附证据定位；每轮留下分数变化、风险门槛和前三项优先修订任务。高分不覆盖重大事实错误；脚本只核算人工评分，不能验证财报真实性或直接签发正式报告。
+
+```bash
+python scripts/score_report.py --scores outputs/quality_scorecard.csv --gates outputs/quality_gates.csv --out-dir outputs/quality_loop
+```
+
+完整版 `run_qa.py` 需同时传 `--scores` 与 `--gates`。模板见 `assets/quality-scorecard-template.csv`、`assets/quality-gates-template.csv`。更多规则见 `references/16-quality-loop.md`。
 
 ## v2.3：研究质量优先，而不是继续堆篇幅
 
@@ -44,7 +56,8 @@ investment_research_copilot/
 
 ```bash
 python -m unittest discover -s tests -v
-python scripts/data_audit.py examples/numeric-audit-demo/metrics.csv --rules examples/numeric-audit-demo/audit_rules.csv --as-of 2026-11-09
+python scripts/data_audit.py examples/numeric-audit-demo/metrics.csv --rules examples/numeric-audit-demo/audit_rules.csv --as-of 2026-11-09 \
+  --scores outputs/quality_scorecard.csv --gates outputs/quality_gates.csv
 ```
 
 第二条故意是**失败示例**：9 个分项求和为 1185，而待审表格写 1165，因此会报错并以退出码 1 结束。它演示了审计功能，不表示相关市场数字经过独立核实。
