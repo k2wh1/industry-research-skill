@@ -110,6 +110,14 @@ description: 对行业、产业链、产业主题及上市公司进行证据驱�
 - 用模型的校准目标再次作为独立验证目标，或用未经依据的敏感性/情景概率输出精确风险收益结论。
 - 研究覆盖表显示“完成”，但核心环节没有完整经营机制、足够证据或独立测算。
 
+## 4C. 研究质量评分—修订 Loop（v2.4 强制）
+
+正式研究完成初稿与事实审计后，**读取 `references/16-quality-loop.md`**，按八个维度（研究目标10、产业逻辑15、证据20、建模15、竞争10、投资价值10、前瞻证伪10、结构表达10）进行100分人工审阅，记录每轮的评分证据、缺陷和动作。重要事实冲突优先阻断，不得用高分冲抵错误。
+
+流程：`Draft → Audit → Score → Diagnose → Revise → Rescore → Human Review`。逐轮生成 `quality_scorecard.csv`、`quality_gates.csv`，运行 `python scripts/score_report.py --scores quality_scorecard.csv --gates quality_gates.csv --out-dir quality_loop`，生成 `quality_review.md`、`revision_queue.csv` 和 `quality_history.json`。评分脚本只计算人工填表结果，**不自动识别事实真实性，也不自动判定正式发布**。全行业正式研究需将评分表和门槛表交给 `run_qa.py`。
+
+终审条件：总分≥90、每维≥4/5、所有人工门槛PASS，且独立实质审阅通过。程序仅输出 `HUMAN_RELEASE_REVIEW_REQUIRED`，不会自动认定 `RELEASED`。旧稿重构须保留独立证据及内容映射，不得靠删除困难问题刷分。
+
 ## 4B. 全行业完整性关卡（深度研究强制）
 
 行业深度的覆盖度不得只依赖章节标题数或“有没有讲到”。必须执行以下过程：
@@ -133,7 +141,7 @@ description: 对行业、产业链、产业主题及上市公司进行证据驱�
 - 关键假设：`assets/assumptions-template.csv`
 - 研究简报：`assets/research-brief-template.md`；缺口清单：`assets/research-gaps-template.md`
 
-正式深度研究通常输出到用户指定目录（或 `research_outputs/<YYYY-MM-DD>-<topic>/`），至少包含 `research_report.md`、`evidence_ledger.csv`、`assumptions.csv`、`research_gaps.md`；需要量化时额外包含 `metrics.csv`、`audit_rules.csv`、`model_manifest.json`、可复算模型文件与 `data_audit_log.md`；全行业深度还包含 `industry_coverage.csv`、`research_review.md`、`figure_plan.md`、`figure_manifest.csv`（无适当图表时说明原因），改写旧稿包含 `revision_coverage.md`。公司估值还应有可复算模型及 `valuation_output.json` 或等价表格；必要时增加 `revision_log.md`。不覆盖原文件，若续写则记录版本号和变化。
+正式深度研究通常输出到用户指定目录（或 `research_outputs/<YYYY-MM-DD>-<topic>/`），至少包含 `research_report.md`、`evidence_ledger.csv`、`assumptions.csv`、`research_gaps.md`；需要量化时额外包含 `metrics.csv`、`audit_rules.csv`、`model_manifest.json`、可复算模型文件与 `data_audit_log.md`；全行业深度还包含 `industry_coverage.csv`、`research_review.md`、`figure_plan.md`、`figure_manifest.csv`、`quality_scorecard.csv`、`quality_gates.csv` 与质量迭代输出（无适当图表时说明原因），改写旧稿包含 `revision_coverage.md`。公司估值还应有可复算模型及 `valuation_output.json` 或等价表格；必要时增加 `revision_log.md`。不覆盖原文件，若续写则记录版本号和变化。
 
 **脚本是算术和结构检查工具，不是数据来源。** 在确定 FCFF/WACC 等输入都可靠且口径一致后，可运行：
 
@@ -145,7 +153,7 @@ python scripts/data_audit.py research_outputs/example/metrics.csv --rules resear
 python scripts/model_check.py research_outputs/example/model_manifest.json
 python scripts/figure_check.py research_outputs/example/figure_manifest.csv --report research_outputs/example/research_report.md
 # 正式全行业深度一次性 QA（必须提供全部文件）：
-python scripts/run_qa.py --mode industry_full --report research_outputs/example/research_report.md --ledger research_outputs/example/evidence_ledger.csv --coverage research_outputs/example/industry_coverage.csv --metrics research_outputs/example/metrics.csv --rules research_outputs/example/audit_rules.csv --models research_outputs/example/model_manifest.json --figures research_outputs/example/figure_manifest.csv --review research_outputs/example/research_review.md --figure-plan research_outputs/example/figure_plan.md --as-of 2026-11-09
+python scripts/run_qa.py --mode industry_full --report research_outputs/example/research_report.md --ledger research_outputs/example/evidence_ledger.csv --coverage research_outputs/example/industry_coverage.csv --metrics research_outputs/example/metrics.csv --rules research_outputs/example/audit_rules.csv --models research_outputs/example/model_manifest.json --figures research_outputs/example/figure_manifest.csv --review research_outputs/example/research_review.md --figure-plan research_outputs/example/figure_plan.md --as-of 2026-11-09 --scores research_outputs/example/quality_scorecard.csv --gates research_outputs/example/quality_gates.csv
 ```
 
 样例输入仅为假设演示，不代表真实公司。
