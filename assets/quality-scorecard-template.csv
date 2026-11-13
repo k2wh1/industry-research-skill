@@ -1,0 +1,9 @@
+round_id,criterion_id,score_0_5,evidence_refs,weakness,next_action
+R1,research_question,,,,
+R1,business_logic,,,,
+R1,evidence,,,,
+R1,modeling,,,,
+R1,competition,,,,
+R1,investment,,,,
+R1,falsification,,,,
+R1,structure,,,,
