@@ -3,7 +3,7 @@ name: industry-research
 description: 对行业、产业链、产业主题及上市公司进行证据驱动的深度研究，建立产品与商业模式、市场规模及供需、竞争与利润池、公司财务与资本回报、盈利预测、市场预期、估值、风险证伪及持续跟踪的完整研究链。适用于行业深度、公司首次覆盖、产业专题及定期跟踪；可输出可追溯研究报告、模型假设与证据账本。当任务只是简单事实查询、SQL教学、代码调试或短时市场快讯时，不强制执行完整流程。
 ---
 
-# Industry Research v2.3：研究质量与独立建模升级
+# Industry Research v2.5：研究—审查—修订强制闭环
 
 ## 身份与最终目标
 
@@ -117,6 +117,19 @@ description: 对行业、产业链、产业主题及上市公司进行证据驱�
 流程：`Draft → Audit → Score → Diagnose → Revise → Rescore → Human Review`。逐轮生成 `quality_scorecard.csv`、`quality_gates.csv`，运行 `python scripts/score_report.py --scores quality_scorecard.csv --gates quality_gates.csv --out-dir quality_loop`，生成 `quality_review.md`、`revision_queue.csv` 和 `quality_history.json`。评分脚本只计算人工填表结果，**不自动识别事实真实性，也不自动判定正式发布**。全行业正式研究需将评分表和门槛表交给 `run_qa.py`。
 
 终审条件：总分≥90、每维≥4/5、所有人工门槛PASS，且独立实质审阅通过。程序仅输出 `HUMAN_RELEASE_REVIEW_REQUIRED`，不会自动认定 `RELEASED`。旧稿重构须保留独立证据及内容映射，不得靠删除困难问题刷分。
+
+## 4D. 防止“评分后直接交付”的执行约束（v2.5）
+
+质量评分不是交付许可。每份专题/深度报告必须建立 `revision_defect_ledger.csv`（模板：`assets/revision-defect-ledger-template.csv`），**同一轮检测到的P0/P1缺陷不得只登记后便跳转下一专题**。
+
+1. 评分前先审阅每个核心结论的事实、解释、反证与财务含义；每条缺陷明确 `module, priority, source_section, finding, evidence_ref, corrective_action`。P0为重大事实/口径/论证错误；P1为缺失重要经营链或高优先级细分分析。
+2. 评分之后执行 `Diagnose → Revise → Verify → Rescore`：每条P0/P1必须有 `status=FIXED` 且有 `fix_ref`、`verification_ref`，或 `status=EXTERNAL_BLOCKED` 且有具体不可获取的原始数据、影响范围和替代工作方案。只写“已知不足”“待以后完善”不算修复。
+3. 有可行动的P0/P1缺陷仍为 `OPEN` 时，`scripts/revision_gate.py` 阻断 `HANDOFF_NEXT_MODULE`。外部材料确实缺失时，可交付明确标识的 `STAGED` 底稿，但不得自称深度验收完成，不得静默推进下一模块。
+4. 每个被修复的高优先级缺陷必须保留旧稿位置、更新证据和新稿位置。至少执行初审与复审两轮（`R1`、`R2`）；无法修复时须记录审查结论与阻断原因，不伪造改善分数。
+5. 单独提交 `revision_defect_ledger.csv`、`revision_summary.md`、`quality_scorecard.csv`（多轮）、`quality_gates.csv`（多轮）以及经审计的最终正文。质量脚本只能验证填表完整性和修订流程，无法替代独立证据审查。
+6. 全景主报告整合时必须执行 `source→destination` 章节映射，报告只保留跨行业发现，专题保留各自机制；没有足够数据的未解事项留在主报告“证据边界/缺口”，不得因合并而伪装成已解决。
+
+执行检查：`python scripts/revision_gate.py --ledger outputs/revision_defect_ledger.csv --rounds outputs/quality_scorecard.csv --mode handoff`。程序返回非零就不能标记“已完成深度研究并进入下一专题”。阶段性研究允许 `--mode staged`，但输出必须持续标示未解决问题。
 
 ## 4B. 全行业完整性关卡（深度研究强制）
 
