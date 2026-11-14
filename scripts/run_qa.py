@@ -15,20 +15,22 @@ from data_audit import audit
 from figure_check import check_figures
 from model_check import check_manifest
 from quality_check import check_report
+from score_report import evaluate
 
 
 def run_checks(*, report: Path, ledger: Path | None = None,
                coverage: Path | None = None, metrics: Path | None = None,
                rules: Path | None = None, models: Path | None = None,
                figures: Path | None = None, review: Path | None = None,
-               figure_plan: Path | None = None, as_of: str | None = None,
+               figure_plan: Path | None = None, scores: Path | None = None,
+               gates: Path | None = None, as_of: str | None = None,
                mode: str = "industry_full"):
     out = []
     required = {"ledger": ledger}
     if mode in {"industry_full", "company"}:
         required.update({"metrics": metrics, "rules": rules, "models": models})
     if mode == "industry_full":
-        required.update({"coverage": coverage, "figures": figures, "review": review, "figure_plan": figure_plan})
+        required.update({"coverage": coverage, "figures": figures, "review": review, "figure_plan": figure_plan, "scores": scores, "gates": gates})
     for label, file in required.items():
         if file is None:
             out.append(("ERROR", f"{label}: required QA artifact not supplied"))
@@ -62,6 +64,17 @@ def run_checks(*, report: Path, ledger: Path | None = None,
         out.extend(check_figures(figures, report))
     if mode == "industry_full" and not (figures and figures.is_file()):
         out.append(("ERROR", "no figure plan/manifest: core evidence visualization not evaluated"))
+    if scores and scores.is_file() and gates and gates.is_file():
+        rating = evaluate(scores, gates)
+        for err in rating["errors"]:
+            out.append(("ERROR", "quality loop: " + err))
+        if rating["rounds"]:
+            last = rating["rounds"][-1]
+            out.append(("INFO", f"quality round {last['round_id']}: {last['total']}/100, {last['status']}"))
+            if mode == "industry_full" and last["status"] != "HUMAN_RELEASE_REVIEW_REQUIRED":
+                out.append(("ERROR", "quality gate not ready for human release review: " + last["status"]))
+        elif mode == "industry_full":
+            out.append(("ERROR", "quality loop has no completed valid review round"))
     return out
 
 
@@ -71,6 +84,8 @@ def main():
     for key in ("ledger", "coverage", "metrics", "rules", "models", "figures", "review"):
         p.add_argument(f"--{key}", type=Path)
     p.add_argument("--figure-plan", type=Path)
+    p.add_argument("--scores", type=Path)
+    p.add_argument("--gates", type=Path)
     p.add_argument("--as-of")
     p.add_argument("--mode", choices=["industry_full", "industry_brief", "thematic", "company", "update"], default="industry_full")
     args = p.parse_args()

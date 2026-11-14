@@ -3,7 +3,7 @@ name: industry-research
 description: 对行业、产业链、产业主题及上市公司进行证据驱动的深度研究，建立产品与商业模式、市场规模及供需、竞争与利润池、公司财务与资本回报、盈利预测、市场预期、估值、风险证伪及持续跟踪的完整研究链。适用于行业深度、公司首次覆盖、产业专题及定期跟踪；可输出可追溯研究报告、模型假设与证据账本。当任务只是简单事实查询、SQL教学、代码调试或短时市场快讯时，不强制执行完整流程。
 ---
 
-# Industry Research v2.3：研究质量与独立建模升级
+# Industry Research v2.5：研究—审查—修订强制闭环
 
 ## 身份与最终目标
 
@@ -110,6 +110,27 @@ description: 对行业、产业链、产业主题及上市公司进行证据驱�
 - 用模型的校准目标再次作为独立验证目标，或用未经依据的敏感性/情景概率输出精确风险收益结论。
 - 研究覆盖表显示“完成”，但核心环节没有完整经营机制、足够证据或独立测算。
 
+## 4C. 研究质量评分—修订 Loop（v2.4 强制）
+
+正式研究完成初稿与事实审计后，**读取 `references/16-quality-loop.md`**，按八个维度（研究目标10、产业逻辑15、证据20、建模15、竞争10、投资价值10、前瞻证伪10、结构表达10）进行100分人工审阅，记录每轮的评分证据、缺陷和动作。重要事实冲突优先阻断，不得用高分冲抵错误。
+
+流程：`Draft → Audit → Score → Diagnose → Revise → Rescore → Human Review`。逐轮生成 `quality_scorecard.csv`、`quality_gates.csv`，运行 `python scripts/score_report.py --scores quality_scorecard.csv --gates quality_gates.csv --out-dir quality_loop`，生成 `quality_review.md`、`revision_queue.csv` 和 `quality_history.json`。评分脚本只计算人工填表结果，**不自动识别事实真实性，也不自动判定正式发布**。全行业正式研究需将评分表和门槛表交给 `run_qa.py`。
+
+终审条件：总分≥90、每维≥4/5、所有人工门槛PASS，且独立实质审阅通过。程序仅输出 `HUMAN_RELEASE_REVIEW_REQUIRED`，不会自动认定 `RELEASED`。旧稿重构须保留独立证据及内容映射，不得靠删除困难问题刷分。
+
+## 4D. 防止“评分后直接交付”的执行约束（v2.5）
+
+质量评分不是交付许可。每份专题/深度报告必须建立 `revision_defect_ledger.csv`（模板：`assets/revision-defect-ledger-template.csv`），**同一轮检测到的P0/P1缺陷不得只登记后便跳转下一专题**。
+
+1. 评分前先审阅每个核心结论的事实、解释、反证与财务含义；每条缺陷明确 `module, priority, source_section, finding, evidence_ref, corrective_action`。P0为重大事实/口径/论证错误；P1为缺失重要经营链或高优先级细分分析。
+2. 评分之后执行 `Diagnose → Revise → Verify → Rescore`：每条P0/P1必须有 `status=FIXED` 且有 `fix_ref`、`verification_ref`，或 `status=EXTERNAL_BLOCKED` 且有具体不可获取的原始数据、影响范围和替代工作方案。只写“已知不足”“待以后完善”不算修复。
+3. 有可行动的P0/P1缺陷仍为 `OPEN` 时，`scripts/revision_gate.py` 阻断 `HANDOFF_NEXT_MODULE`。外部材料确实缺失时，可交付明确标识的 `STAGED` 底稿，但不得自称深度验收完成，不得静默推进下一模块。
+4. 每个被修复的高优先级缺陷必须保留旧稿位置、更新证据和新稿位置。至少执行初审与复审两轮（`R1`、`R2`）；无法修复时须记录审查结论与阻断原因，不伪造改善分数。
+5. 单独提交 `revision_defect_ledger.csv`、`revision_summary.md`、`quality_scorecard.csv`（多轮）、`quality_gates.csv`（多轮）以及经审计的最终正文。质量脚本只能验证填表完整性和修订流程，无法替代独立证据审查。
+6. 全景主报告整合时必须执行 `source→destination` 章节映射，报告只保留跨行业发现，专题保留各自机制；没有足够数据的未解事项留在主报告“证据边界/缺口”，不得因合并而伪装成已解决。
+
+执行检查：`python scripts/revision_gate.py --ledger outputs/revision_defect_ledger.csv --rounds outputs/quality_scorecard.csv --mode handoff`。程序返回非零就不能标记“已完成深度研究并进入下一专题”。阶段性研究允许 `--mode staged`，但输出必须持续标示未解决问题。
+
 ## 4B. 全行业完整性关卡（深度研究强制）
 
 行业深度的覆盖度不得只依赖章节标题数或“有没有讲到”。必须执行以下过程：
@@ -133,7 +154,7 @@ description: 对行业、产业链、产业主题及上市公司进行证据驱�
 - 关键假设：`assets/assumptions-template.csv`
 - 研究简报：`assets/research-brief-template.md`；缺口清单：`assets/research-gaps-template.md`
 
-正式深度研究通常输出到用户指定目录（或 `research_outputs/<YYYY-MM-DD>-<topic>/`），至少包含 `research_report.md`、`evidence_ledger.csv`、`assumptions.csv`、`research_gaps.md`；需要量化时额外包含 `metrics.csv`、`audit_rules.csv`、`model_manifest.json`、可复算模型文件与 `data_audit_log.md`；全行业深度还包含 `industry_coverage.csv`、`research_review.md`、`figure_plan.md`、`figure_manifest.csv`（无适当图表时说明原因），改写旧稿包含 `revision_coverage.md`。公司估值还应有可复算模型及 `valuation_output.json` 或等价表格；必要时增加 `revision_log.md`。不覆盖原文件，若续写则记录版本号和变化。
+正式深度研究通常输出到用户指定目录（或 `research_outputs/<YYYY-MM-DD>-<topic>/`），至少包含 `research_report.md`、`evidence_ledger.csv`、`assumptions.csv`、`research_gaps.md`；需要量化时额外包含 `metrics.csv`、`audit_rules.csv`、`model_manifest.json`、可复算模型文件与 `data_audit_log.md`；全行业深度还包含 `industry_coverage.csv`、`research_review.md`、`figure_plan.md`、`figure_manifest.csv`、`quality_scorecard.csv`、`quality_gates.csv` 与质量迭代输出（无适当图表时说明原因），改写旧稿包含 `revision_coverage.md`。公司估值还应有可复算模型及 `valuation_output.json` 或等价表格；必要时增加 `revision_log.md`。不覆盖原文件，若续写则记录版本号和变化。
 
 **脚本是算术和结构检查工具，不是数据来源。** 在确定 FCFF/WACC 等输入都可靠且口径一致后，可运行：
 
@@ -145,7 +166,7 @@ python scripts/data_audit.py research_outputs/example/metrics.csv --rules resear
 python scripts/model_check.py research_outputs/example/model_manifest.json
 python scripts/figure_check.py research_outputs/example/figure_manifest.csv --report research_outputs/example/research_report.md
 # 正式全行业深度一次性 QA（必须提供全部文件）：
-python scripts/run_qa.py --mode industry_full --report research_outputs/example/research_report.md --ledger research_outputs/example/evidence_ledger.csv --coverage research_outputs/example/industry_coverage.csv --metrics research_outputs/example/metrics.csv --rules research_outputs/example/audit_rules.csv --models research_outputs/example/model_manifest.json --figures research_outputs/example/figure_manifest.csv --review research_outputs/example/research_review.md --figure-plan research_outputs/example/figure_plan.md --as-of 2026-11-09
+python scripts/run_qa.py --mode industry_full --report research_outputs/example/research_report.md --ledger research_outputs/example/evidence_ledger.csv --coverage research_outputs/example/industry_coverage.csv --metrics research_outputs/example/metrics.csv --rules research_outputs/example/audit_rules.csv --models research_outputs/example/model_manifest.json --figures research_outputs/example/figure_manifest.csv --review research_outputs/example/research_review.md --figure-plan research_outputs/example/figure_plan.md --as-of 2026-11-09 --scores research_outputs/example/quality_scorecard.csv --gates research_outputs/example/quality_gates.csv
 ```
 
 样例输入仅为假设演示，不代表真实公司。
