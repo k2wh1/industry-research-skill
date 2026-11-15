@@ -43,7 +43,7 @@
 | counterevidence | 核心论点具备反方证据、下行条件及跟踪变量 |
 | visual_editorial | 需要时完成图表来源、单位、中文字体和逐页人工检查 |
 
-状态必须填 PASS / FAIL / UNKNOWN，并写证据或原因。任何 FAIL => BLOCKED；存在 UNKNOWN => STAGED。全部 PASS 且总分≥90、各维≥4/5，才可标记 HUMAN_RELEASE_REVIEW_REQUIRED（进入人工终审），**脚本不会直接宣布 RELEASED**。总分未达标=>REVISION_REQUIRED，不等同重大事实错误。
+状态必须填 PASS / FAIL / UNKNOWN，并写证据或原因。任何 FAIL => BLOCKED；存在 UNKNOWN => STAGED。全部 PASS 且总分≥90、各维≥4/5，是既有 HUMAN_RELEASE_REVIEW_REQUIRED 的高标准独立终审参考条件，**脚本不会直接宣布 RELEASED**。总分未达标的评分结果 REVISION_REQUIRED 属于该评分流程的提示；内部正式研究定稿另依 v2.10 五项实质验收，不得把90分机械地当作无限延期条件，也不能用分数掩盖真实缺陷。
 
 A档≥90，B档80–89.9，C档70–79.9，D档60–69.9，E档<60。档次和发布状态是两个不同概念，例如 A 档仍可能 BLOCKED。
 
@@ -84,3 +84,7 @@ A档≥90，B档80–89.9，C档70–79.9，D档60–69.9，E档<60。档次和�
 ## v2.6｜同任务自动执行与全稿复审
 
 初稿后主动进行 Reflection，并将可行动 P0/P1 转为本次执行中的修订，不以交付文件或填写评分表作为完成标志。每次改动都必须新增一轮对**完整报告**的审阅，记录 `execution_cycle.csv` 中的版本/反思/修复/核验证据。使用 `scripts/autonomous_loop_gate.py` 进行文档链检查，配合已有 `revision_gate.py`、`score_report.py` 和 `run_qa.py`。存在外部阻断时可将其作为 STAGED 底稿交付，但不得标记 RELEASED。独立事实核验与人工发布审查仍必需。
+
+## v2.10｜正式研究定稿与独立机构审批
+
+内部研究定稿的五项验收与真实独立机构批准是两回事。缺少非关键内部数据但研究方法可靠、结论范围明确、披露充分时，不应让报告永久 STAGED。详见 references/20-formal-finalization.md。评分仅用于定位研究不足，不能替代真实事实审计。
