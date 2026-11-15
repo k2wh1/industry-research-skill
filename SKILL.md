@@ -3,7 +3,7 @@ name: industry-research
 description: 对行业、产业链、产业主题及上市公司进行证据驱动的深度研究，建立产品与商业模式、市场规模及供需、竞争与利润池、公司财务与资本回报、盈利预测、市场预期、估值、风险证伪及持续跟踪的完整研究链。适用于行业深度、公司首次覆盖、产业专题及定期跟踪；可输出可追溯研究报告、模型假设与证据账本。当任务只是简单事实查询、SQL教学、代码调试或短时市场快讯时，不强制执行完整流程。
 ---
 
-# Industry Research v2.9：自主执行—反思—修订—复验闭环
+# Industry Research v2.10：自主执行—反思—修订—复验闭环
 
 ## 身份与最终目标
 
@@ -13,13 +13,13 @@ description: 对行业、产业链、产业主题及上市公司进行证据驱�
 
 **必须分清**行业有成长性、企业能赚钱、企业能创造经济利润、当前股票有投资价值这四个不同命题。研究可以得出「目前无法判断」；不能为凑齐报告而虚构数据、预测、评级或目标价。
 
-## 优先执行契约（v2.9：事实-计算-叙述反查、替代研究后才允许阻断）
+## 优先执行契约（v2.10：正式定稿为主要交付目标）
 
 正式研究及已有研报重构应在**同一次用户委托**内自主执行：`PLAN → EXECUTE → AUDIT → REFLECTION → DIAGNOSE → REVISION → VERIFY → REFLECTION...`。**生成 Word/PDF、写完章节、脚本 PASS 或发现问题并在回复列出，都不是研究任务的结束条件。** 只要存在当前能够修复的 P0/P1 重大缺陷，就继续修改并复核，无需用户再次说“继续”。执行前必须读取 `references/17-autonomous-execution.md`；与本 Skill 其他段落的轮次或停止措辞冲突时，以该协议及数据真实性约束为准。
 
 每次 `REVISE` 后必须产生**新版本 + 修订证据 + 下一轮 Reflection**。使用 `assets/execution-cycle-template.csv` 记录轮次，运行 `scripts/autonomous_loop_gate.py` 验证版本链；再结合原有 `revision_gate.py`、`score_report.py` 和 `run_qa.py`。这些工具只检查结构化记录，不会替代独立事实核验。**不得为了凑分数、提高完成率或避免返工而删掉困难问题。**
 
-不能取得可靠数据时，将相应判断标记 `EXTERNAL_BLOCKED` 并提出已经实际完成的替代研究；资源限制则标记 `STOP_LIMIT`。两者只能交付 `STAGED`，不得写“终审完成”。AI 无法在本次回复结束后继续后台研究；本规则要求的是**当前任务内的连续执行**，不是承诺异步工作。
+数据缺失须评估重要性：影响核心判断且无法可靠替代的缺口为 `CRITICAL`，阻断本期定稿；非关键内部数据若已完成替代研究、边界披露和影响评估，不阻断内部正式研究定稿。真实执行资源限制仍用 `STOP_LIMIT`。内部正式研究定稿不等于独立机构审签。AI 无法在本次回复结束后继续后台研究；本规则要求的是**当前任务内的连续执行**，不是承诺异步工作。
 
 ## 0. 深度选择：不得把全行业深度压缩成速览
 
@@ -108,7 +108,7 @@ description: 对行业、产业链、产业主题及上市公司进行证据驱�
 2. 需要市场规模、供需、公司盈利或估值预测时读取 `references/13-independent-modeling.md`，交付 `model_manifest.json` 和可复算模型文件，显式区分 **外部预测、内部校准、独立测算、样本外验证**。不能用同一总量先配平模型，再宣布与总量一致是独立交叉验证。
 3. 核心细分环节研究完后读取 `references/14-analytical-depth.md`，在 `research_review.md` 做实质评分（0 缺失/1 描述/2 分析/3 可检验）。**重要环节只有技术定义、市场数字和供应商名单，深度最多为 1**；高优先级环节未达到 2，不标“已完成行业深度”。有条件时达到 3，不靠编造数据拔高深度等级。
 4. 正式深度报告读取 `references/15-visualization.md`，先建立 `figure_plan.md` 再形成必要图表和 `figure_manifest.csv`：历史趋势、需求驱动、供需时滞、竞争地图、公司多年财务、预测与敏感性。并非强制图数量，**但没有图表就必须说明证据和可视化缺口**；不能再用大量文字和同构表格替代合适的图。
-5. 明确区分 `BLOCKED`（重大算术/事实冲突）、`STAGED`（阶段性研究）、`EDITORIAL_READY`（完成数据与研究初核，可排版）、`RELEASED`（正式实质审查通过）。所有脚本通过只表示**在提供的内容和规则范围内的结构/算术检查通过**，从不自动标记 `RELEASED`。
+5. 明确区分 `BLOCKED`（重大事实冲突）、`STAGED`（核心研究未完成）、`EDITORIAL_READY`（可排版）、`FORMAL_RESEARCH_FINAL`（完成五项内部研究验收的正式研究定稿）、`INDEPENDENT_APPROVAL`（真实独立机构审签）。脚本 PASS 不等于事实正确、机构审签或 `RELEASED`。
 
 ### 必须阻断的情况
 
@@ -136,7 +136,7 @@ description: 对行业、产业链、产业主题及上市公司进行证据驱�
 
 流程：`Draft → Audit → Score → Diagnose → Revise → Rescore → Human Review`。逐轮生成 `quality_scorecard.csv`、`quality_gates.csv`，运行 `python scripts/score_report.py --scores quality_scorecard.csv --gates quality_gates.csv --out-dir quality_loop`，生成 `quality_review.md`、`revision_queue.csv` 和 `quality_history.json`。评分脚本只计算人工填表结果，**不自动识别事实真实性，也不自动判定正式发布**。全行业正式研究需将评分表和门槛表交给 `run_qa.py`。
 
-终审条件：总分≥90、每维≥4/5、所有人工门槛PASS，且独立实质审阅通过。程序仅输出 `HUMAN_RELEASE_REVIEW_REQUIRED`，不会自动认定 `RELEASED`。旧稿重构须保留独立证据及内容映射，不得靠删除困难问题刷分。
+独立机构终审参考总分≥90、每维≥4/5、所有质量门槛 PASS 并经真正独立审阅批准。内部正式研究定稿以 v2.10 五项实质验收为准，评分用于找出缺陷；不得靠虚增得分宣称完成，也不得在重大问题修复后仅因不足90分而无限延期。旧稿重构须保留证据与内容映射。
 
 ## 4D. 防止“评分后直接交付”的执行约束（v2.5）
 
@@ -144,7 +144,7 @@ description: 对行业、产业链、产业主题及上市公司进行证据驱�
 
 1. 评分前先审阅每个核心结论的事实、解释、反证与财务含义；每条缺陷明确 `module, priority, source_section, finding, evidence_ref, corrective_action`。P0为重大事实/口径/论证错误；P1为缺失重要经营链或高优先级细分分析。
 2. 评分之后执行 `Diagnose → Revise → Verify → Rescore`：每条P0/P1必须有 `status=FIXED` 且有 `fix_ref`、`verification_ref`，或 `status=EXTERNAL_BLOCKED` 且有具体不可获取的原始数据、影响范围和替代工作方案。只写“已知不足”“待以后完善”不算修复。
-3. 有可行动的P0/P1缺陷仍为 `OPEN` 时，`scripts/revision_gate.py` 阻断该模块作为已验收结果交接。可以继续与其无依赖的独立模块，但不能静默跳过问题或宣称整体完成。外部材料确实缺失时，可交付明确标识的 `STAGED` 底稿，但不得自称深度验收完成，不得静默推进下一模块。
+3. 有可行动的P0/P1缺陷仍为 `OPEN` 时，`scripts/revision_gate.py` 阻断该模块作为已验收结果交接。可以继续与其无依赖的独立模块，但不能静默跳过问题或宣称整体完成。外部材料确实缺失且影响重要结论时，交付 `STAGED` 底稿；若缺失属于非关键内部数据且替代研究、限制推理与披露完整，不得仅凭缺失阻止正式研究定稿。
 4. 每个被修复的高优先级缺陷必须保留旧稿位置、更新证据和新稿位置。若初审发现可行动P0/P1，必须至少执行“R1发现→修订→R2复审”；首轮已通过全部实质验收时不强行制造第二轮。外部阻断须记录影响，不能伪造改善分数。
 5. 单独提交 `revision_defect_ledger.csv`、`revision_summary.md`、`quality_scorecard.csv`（多轮）、`quality_gates.csv`（多轮）以及经审计的最终正文。质量脚本只能验证填表完整性和修订流程，无法替代独立证据审查。
 6. 全景主报告整合时必须执行 `source→destination` 章节映射，报告只保留跨行业发现，专题保留各自机制；没有足够数据的未解事项留在主报告“证据边界/缺口”，不得因合并而伪装成已解决。
@@ -158,7 +158,7 @@ description: 对行业、产业链、产业主题及上市公司进行证据驱�
 1. **R1 执行后立即反思全文**：检查核心问题、事实和口径、产业因果链、竞争与现金流、反证、冗余、跨专题冲突及排版；把发现写进 `revision_defect_ledger.csv`，不是仅在回复中列出。
 2. **立即返工**：可行动 P0/P1 一律本次任务中修复，记录旧稿→新稿版本与修订核验；必要时重查一手资料、补模型、重做图表与公司比较。不等用户要求下一轮。
 3. **重新审查全稿**：每次修订后生成下一轮 Reflection（R2/R3...），检查旧问题是否修好以及有没有引入新问题，重新运行适用 QA 与评分。
-4. **真实终止条件**：只有可行动 P0/P1 清零、硬门槛审查通过、全文逻辑与版式复核完成，才进入 `HUMAN_RELEASE_REVIEW_REQUIRED`；不能用高分覆盖重大事实冲突。外部无法取证或本次执行资源不足时输出有明确残余清单的 `STAGED`，不假称完成。
+4. **真实终止条件**：只有可行动 P0/P1 清零、硬门槛审查通过、全文逻辑与版式复核完成，才进入 `HUMAN_RELEASE_REVIEW_REQUIRED`；不能用高分覆盖重大事实冲突。仅在核心事实无法成立或实际执行资源受限时输出有明确残余清单的 `STAGED`；非关键且已披露数据边界按第4I节参加正式定稿验收。
 5. **保留执行链**：填写 `execution_cycle.csv`（模板见 `assets/execution-cycle-template.csv`），并运行：
    `python scripts/autonomous_loop_gate.py --trace outputs/execution_cycle.csv --require-ready --out outputs/loop_gate_result.json`
    若返回非零，必须检查是否需要继续改进或明确停在 `STAGED`。该检查不能证明独立事实真实性，更不能代替人工终审。
@@ -202,6 +202,15 @@ description: 对行业、产业链、产业主题及上市公司进行证据驱�
 - **脚本能力边界**：新闸门只检查已登记数学关系和替代方法记录，不证明来源真实性、未登记段落无误或终审资格。参考来源实际核验仍用 v2.8 source_review.csv。 
 - **停止前检查**：`python scripts/substantive_stop_gate.py --series outputs/series.csv --claims outputs/quantitative_claims.csv --blockers outputs/blocker_alternatives.csv --out outputs/substantive_gate_result.json`，并连同已有 v2.8 研究行动、v2.7 覆盖和 v2.6 循环闸门复核。任何仍可行动的重要任务不得因其他项目 EXTERNAL_BLOCKED 被跳过。
 
+## 4I. 正式研究定稿的有限终点（v2.10 强制）
+
+**正式深度研究与旧稿重构必须先读取 `references/20-formal-finalization.md`，以正式研究定稿为交付目标，而不是机械持续 M8→M9→M10。** 开始时固定本期研究范围、as-of 日期、主报告及专题覆盖、核心判断与交付内容；后续不得为了验收擅自缩减范围。
+
+- **五项实质验收**：`source_integrity`（重要源证据实际核验）、`research_depth`（高优先级专题经营与财务深度）、`judgment_and_falsification`（核心判断和反方检验）、`editorial_integrity`（目录/图表/排版）、`final_integrated_review`（全部重大可修复缺陷有实际修复与全稿复核）。
+- **缺口分级**：`CRITICAL` 缺口若影响核心结论必须继续研究或阻断定稿；`NONCRITICAL` 内部产品净价、厂级良率、SKU ROIC 等，在有可靠替代研究、影响评估、推断边界和报告披露时，不得令整份研究永远 `STAGED`。不能通过简单将 P0/P1 降级、删除原研究内容或伪造证据来通过门槛。
+- **独立终审单独定义**：完成内部实质审计，可交付“正式研究定稿”PDF/Word/模型/证据和 QA；真实独立机构审签需要独立人员或机构实际批准，AI 自审不能冒充。
+- **完成即交付**：五项验收通过后停止机械增加页数或反复调整版本号；新数据和新问题转为后续 UPDATE，而不是无限否定本期正式定稿。
+- **检查记录**：运行 `python scripts/formal_final_gate.py --report outputs/research_report.md --acceptance outputs/formal_final_acceptance.csv --gaps outputs/formal_final_gaps.csv --defects outputs/revision_defect_ledger.csv --coverage outputs/industry_coverage.csv --sources outputs/source_review.csv --out outputs/formal_final_gate_result.json`。检查器仅验证登记表结构，不自动核实外部资料真实性或签发报告。
 ## 5. 交付协议
 
 默认使用专业中文。**在撰写正式报告前必须读取 `references/10-writing-editorial.md`；全行业深度还必须读取 `references/11-depth-completeness.md`、`12-data-audit.md`、`13-independent-modeling.md`、`14-analytical-depth.md` 与 `15-visualization.md`，依次执行原始数据审计、独立建模、分析深度、研究完整性、图表与编辑排版五道关卡。** 内部研究表、五力表、反证表、假设表不得不加整理地复制为最终正文；正文优先连贯论述，表格只承载真正需要横向比较的信息。避免夸张标题、统一句式、密集粗体和脱离依据的“市场在定价”推断。模板用于提示必需内容，而不是机械输出固定章节：
@@ -214,7 +223,7 @@ description: 对行业、产业链、产业主题及上市公司进行证据驱�
 - 关键假设：`assets/assumptions-template.csv`
 - 研究简报：`assets/research-brief-template.md`；缺口清单：`assets/research-gaps-template.md`
 
-正式深度研究通常输出到用户指定目录（或 `research_outputs/<YYYY-MM-DD>-<topic>/`），至少包含 `research_report.md`、`evidence_ledger.csv`、`assumptions.csv`、`research_gaps.md`；需要量化时额外包含 `metrics.csv`、`audit_rules.csv`、`model_manifest.json`、可复算模型文件与 `data_audit_log.md`；全行业深度还包含 `industry_coverage.csv`、`research_review.md`、`figure_plan.md`、`figure_manifest.csv`、`quality_scorecard.csv`、`quality_gates.csv` 与质量迭代输出（无适当图表时说明原因），改写旧稿包含 `revision_coverage.md`；正式深度研究与研报重构还须提供 `execution_cycle.csv`、`loop_gate_result.json`、`research_queue.csv`、`coverage_stop_gate_result.json` 和缺陷修复记录（或标记无法执行的原因）。公司估值还应有可复算模型及 `valuation_output.json` 或等价表格；必要时增加 `revision_log.md`。不覆盖原文件，若续写则记录版本号和变化。
+正式深度研究通常输出到用户指定目录（或 `research_outputs/<YYYY-MM-DD>-<topic>/`），至少包含 `research_report.md`、`evidence_ledger.csv`、`assumptions.csv`、`research_gaps.md`；需要量化时额外包含 `metrics.csv`、`audit_rules.csv`、`model_manifest.json`、可复算模型文件与 `data_audit_log.md`；全行业深度还包含 `industry_coverage.csv`、`research_review.md`、`figure_plan.md`、`figure_manifest.csv`、`quality_scorecard.csv`、`quality_gates.csv` 与质量迭代输出（无适当图表时说明原因），改写旧稿包含 `revision_coverage.md`；正式研究定稿还需 `finalization_scope.md`、`formal_final_acceptance.csv`、`formal_final_gaps.csv`、`formal_final_gate_result.json` 和经排版 QA 的正式 PDF/Word；正式深度研究与研报重构还须提供 `execution_cycle.csv`、`loop_gate_result.json`、`research_queue.csv`、`coverage_stop_gate_result.json` 和缺陷修复记录（或标记无法执行的原因）。公司估值还应有可复算模型及 `valuation_output.json` 或等价表格；必要时增加 `revision_log.md`。不覆盖原文件，若续写则记录版本号和变化。
 
 **脚本是算术和结构检查工具，不是数据来源。** 在确定 FCFF/WACC 等输入都可靠且口径一致后，可运行：
 
