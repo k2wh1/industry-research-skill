@@ -1,4 +1,4 @@
-# industry-research v2.7 — 行业研究、公司研究与投资研究 Skill
+# industry-research v2.8 — 行业研究、公司研究与投资研究 Skill
 
 面向 Codex 及兼容 [Agent Skills](https://agentskills.io/specification) 的工具。以「核心争议 → 证据 → 产业/竞争 → 公司经营 → 财务预测 → 市场预期与估值 → 证伪与跟踪」为研究主线，而非把长报告目录填满。
 
@@ -20,6 +20,10 @@ investment_research_copilot/
 **个人级安装**：`$HOME/.agents/skills/industry-research/`。Windows PowerShell 里 `$HOME` 指 Windows 用户主目录；在 WSL2 Ubuntu 里 `$HOME` 是 Linux 的用户主目录，二者不同。
 
 无需 Python 包依赖（仅运行本包脚本需要 Python 3.10+）。Codex 可通过 `$industry-research` 明确调用；如果没有识别，重新启动 Codex 或确认工作目录位于对应项目树中。参见 [Codex Skill 官方文档](https://learn.chatgpt.com/docs/build-skills)。
+
+## v2.8：Reflection 必须触发具体研究行动
+
+新增 `references/18-research-action-loop.md`、`reflection_actions.csv`、`source_review.csv` 和 `scripts/research_action_gate.py`。阻断高优先级问题只被写进汇报、从报告末尾继续追加重复章节、全部评分维度共用同一句整改动作，以及来源占位符在未核实的情况下进入正式交付。代码只验证登记与流程一致性，不会实际阅读和核实所有来源；研究者必须打开原文完成证据审核，并对修订后的整份报告重新审查。
 
 ## v2.7：阻止以“阶段性研究”逃避可行动任务
 
@@ -203,6 +207,9 @@ v2.1 起新增 `references/10-writing-editorial.md`（正式报告写作、去�
 建议先让 Skill 为研究对象列出 3–7 个关键争议和覆盖计划，再让它优先解决最影响预测和投资结论的问题；可逐章研究，但不能绕过证据和反方检验。Skill 可以给出条件化投资研究结论，不代表保证收益或适合个人账户的投资建议。
 
 ## 版本
+
+`v2.8.0` — 强制“Reflection→Action→Execute→Verify”，来源审计台账、评分差异化任务和文稿结构审校，不再仅靠增加版本号或高分结束。
+
 
 `v2.6.0` — 同一次任务内自动研究、反思、修订与全稿复验；新增执行轨迹闸门、分阶段停止状态和回归测试，禁止仅生成版本后交付。
 
