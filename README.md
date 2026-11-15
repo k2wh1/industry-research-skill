@@ -1,4 +1,4 @@
-# industry-research v2.6 — 行业研究、公司研究与投资研究 Skill
+# industry-research v2.7 — 行业研究、公司研究与投资研究 Skill
 
 面向 Codex 及兼容 [Agent Skills](https://agentskills.io/specification) 的工具。以「核心争议 → 证据 → 产业/竞争 → 公司经营 → 财务预测 → 市场预期与估值 → 证伪与跟踪」为研究主线，而非把长报告目录填满。
 
@@ -20,6 +20,12 @@ investment_research_copilot/
 **个人级安装**：`$HOME/.agents/skills/industry-research/`。Windows PowerShell 里 `$HOME` 指 Windows 用户主目录；在 WSL2 Ubuntu 里 `$HOME` 是 Linux 的用户主目录，二者不同。
 
 无需 Python 包依赖（仅运行本包脚本需要 Python 3.10+）。Codex 可通过 `$industry-research` 明确调用；如果没有识别，重新启动 Codex 或确认工作目录位于对应项目树中。参见 [Codex Skill 官方文档](https://learn.chatgpt.com/docs/build-skills)。
+
+## v2.7：阻止以“阶段性研究”逃避可行动任务
+
+新增 `scripts/coverage_stop_gate.py` 与 `assets/research-queue-template.csv`：将覆盖表中 HIGH 且未完成的项目强制转换为研究任务；外部阻断须匹配准确模块和证据；如果其他 HIGH 仍可研究，不能因为某项 ROIC 或客户利用率缺失而提前停止。研究资源限制使用如实的 `STOP_LIMIT`，绝不冒充外部数据阻断或已通过。
+
+运行 `python scripts/coverage_stop_gate.py --coverage outputs/industry_coverage.csv --queue outputs/research_queue.csv --defects outputs/revision_defect_ledger.csv --stop-reason NONE --out outputs/coverage_stop_gate_result.json`。闸门只检查登记表一致性，不代替事实核验。
 
 ## v2.6：同任务自动 Execute → Reflection → Revision
 

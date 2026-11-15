@@ -3,7 +3,7 @@ name: industry-research
 description: 对行业、产业链、产业主题及上市公司进行证据驱动的深度研究，建立产品与商业模式、市场规模及供需、竞争与利润池、公司财务与资本回报、盈利预测、市场预期、估值、风险证伪及持续跟踪的完整研究链。适用于行业深度、公司首次覆盖、产业专题及定期跟踪；可输出可追溯研究报告、模型假设与证据账本。当任务只是简单事实查询、SQL教学、代码调试或短时市场快讯时，不强制执行完整流程。
 ---
 
-# Industry Research v2.6：自主执行—反思—修订—复验闭环
+# Industry Research v2.7：自主执行—反思—修订—复验闭环
 
 ## 身份与最终目标
 
@@ -13,7 +13,7 @@ description: 对行业、产业链、产业主题及上市公司进行证据驱�
 
 **必须分清**行业有成长性、企业能赚钱、企业能创造经济利润、当前股票有投资价值这四个不同命题。研究可以得出「目前无法判断」；不能为凑齐报告而虚构数据、预测、评级或目标价。
 
-## 优先执行契约（v2.6：自动循环，不等待“继续”）
+## 优先执行契约（v2.7：研究覆盖约束与自动返工）
 
 正式研究及已有研报重构应在**同一次用户委托**内自主执行：`PLAN → EXECUTE → AUDIT → REFLECTION → DIAGNOSE → REVISION → VERIFY → REFLECTION...`。**生成 Word/PDF、写完章节、脚本 PASS 或发现问题并在回复列出，都不是研究任务的结束条件。** 只要存在当前能够修复的 P0/P1 重大缺陷，就继续修改并复核，无需用户再次说“继续”。执行前必须读取 `references/17-autonomous-execution.md`；与本 Skill 其他段落的轮次或停止措辞冲突时，以该协议及数据真实性约束为准。
 
@@ -165,6 +165,21 @@ description: 对行业、产业链、产业主题及上市公司进行证据驱�
 
 同一任务中若一处外部数据缺口阻断某模块，可在不产生依赖错误的前提下继续其他独立模块；不能将阻断模块计为完成。不存在“建议做三轮，所以三轮后自动交付”的规则。纯语言美化不能替代分析深度提升。
 
+## 4F. 研究覆盖驱动的禁止提前退出闸门（v2.7 强制）
+
+**高优先级覆盖不足是新的可执行研究任务，不是附录里的一句“partial”。** 每次 Reflection 必须从 `industry_coverage.csv` 自动派生 `research_queue.csv`，逐行追问为什么未通过、可进一步取得什么资料、下一步具体要做哪项研究。使用 `assets/research-queue-template.csv`，记录 exact `sub_industry`、priority、research_question、next_action、status、attempt_ref、blocker_reason。
+
+- HIGH 且 `status` 非 pass/complete、深度低于2、或缺少来源时，不能只标记“阶段性”，必须有未完成研究队列。
+- 如果数据缺失只阻断某一问题，继续其他不依赖该数据的 HIGH 子领域。**单项 EXTERNAL_BLOCKED 不得阻断其他可行动的研究。**
+- `EXTERNAL_BLOCKED` 仅能用于同一细分项的 `revision_defect_ledger.csv` 中具有证据、原始资料尝试、影响范围的阻断，不能把公司级 ROIC 缺失泛化为 SaaS、Serverless 等全部研究的停止原因。
+- 工作量大或达到当前可用执行资源限制时，不能假称 EXTERNAL_BLOCKED 或已经通过；只允许有具体尝试记录的 `STOP_LIMIT`，清楚交付未完成的 HIGH 研究问题，状态仅为阶段性。
+- **停止前强制运行**：
+  `python scripts/coverage_stop_gate.py --coverage outputs/industry_coverage.csv --queue outputs/research_queue.csv --defects outputs/revision_defect_ledger.csv --stop-reason NONE --out outputs/coverage_stop_gate_result.json`
+  如被阻断，应在当前任务内继续研究并更新各文件，再重跑；只有真实外部数据阻断改用 `EXTERNAL_DATA`，真实资源限制改用 `RESOURCE_LIMIT`。任何模式返回非零不能称为覆盖完成。
+- `coverage_stop_gate.py` 只检查登记数据的相互一致性；不能证明已完成实质研究、事实核验或独立终审。门槛变宽松不应代替实际补充研究。
+
+在第4E节规定的 `autonomous_loop_gate.py` 之外，本闸门单独执行：前者检查“有没有形成修订版本链”，后者检查“是否仍有可行动高优先级未完成内容”。两者都通过也不自动产生 `RELEASED`。
+
 ## 5. 交付协议
 
 默认使用专业中文。**在撰写正式报告前必须读取 `references/10-writing-editorial.md`；全行业深度还必须读取 `references/11-depth-completeness.md`、`12-data-audit.md`、`13-independent-modeling.md`、`14-analytical-depth.md` 与 `15-visualization.md`，依次执行原始数据审计、独立建模、分析深度、研究完整性、图表与编辑排版五道关卡。** 内部研究表、五力表、反证表、假设表不得不加整理地复制为最终正文；正文优先连贯论述，表格只承载真正需要横向比较的信息。避免夸张标题、统一句式、密集粗体和脱离依据的“市场在定价”推断。模板用于提示必需内容，而不是机械输出固定章节：
@@ -177,7 +192,7 @@ description: 对行业、产业链、产业主题及上市公司进行证据驱�
 - 关键假设：`assets/assumptions-template.csv`
 - 研究简报：`assets/research-brief-template.md`；缺口清单：`assets/research-gaps-template.md`
 
-正式深度研究通常输出到用户指定目录（或 `research_outputs/<YYYY-MM-DD>-<topic>/`），至少包含 `research_report.md`、`evidence_ledger.csv`、`assumptions.csv`、`research_gaps.md`；需要量化时额外包含 `metrics.csv`、`audit_rules.csv`、`model_manifest.json`、可复算模型文件与 `data_audit_log.md`；全行业深度还包含 `industry_coverage.csv`、`research_review.md`、`figure_plan.md`、`figure_manifest.csv`、`quality_scorecard.csv`、`quality_gates.csv` 与质量迭代输出（无适当图表时说明原因），改写旧稿包含 `revision_coverage.md`；正式深度研究与研报重构还须提供 `execution_cycle.csv`、`loop_gate_result.json` 和缺陷修复记录（或标记无法执行的原因）。公司估值还应有可复算模型及 `valuation_output.json` 或等价表格；必要时增加 `revision_log.md`。不覆盖原文件，若续写则记录版本号和变化。
+正式深度研究通常输出到用户指定目录（或 `research_outputs/<YYYY-MM-DD>-<topic>/`），至少包含 `research_report.md`、`evidence_ledger.csv`、`assumptions.csv`、`research_gaps.md`；需要量化时额外包含 `metrics.csv`、`audit_rules.csv`、`model_manifest.json`、可复算模型文件与 `data_audit_log.md`；全行业深度还包含 `industry_coverage.csv`、`research_review.md`、`figure_plan.md`、`figure_manifest.csv`、`quality_scorecard.csv`、`quality_gates.csv` 与质量迭代输出（无适当图表时说明原因），改写旧稿包含 `revision_coverage.md`；正式深度研究与研报重构还须提供 `execution_cycle.csv`、`loop_gate_result.json`、`research_queue.csv`、`coverage_stop_gate_result.json` 和缺陷修复记录（或标记无法执行的原因）。公司估值还应有可复算模型及 `valuation_output.json` 或等价表格；必要时增加 `revision_log.md`。不覆盖原文件，若续写则记录版本号和变化。
 
 **脚本是算术和结构检查工具，不是数据来源。** 在确定 FCFF/WACC 等输入都可靠且口径一致后，可运行：
 
