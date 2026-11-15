@@ -88,3 +88,9 @@ A档≥90，B档80–89.9，C档70–79.9，D档60–69.9，E档<60。档次和�
 ## v2.10｜正式研究定稿与独立机构审批
 
 内部研究定稿的五项验收与真实独立机构批准是两回事。缺少非关键内部数据但研究方法可靠、结论范围明确、披露充分时，不应让报告永久 STAGED。详见 references/20-formal-finalization.md。评分仅用于定位研究不足，不能替代真实事实审计。
+
+## v2.11｜论证一致性是独立于数值和排版的质量门槛
+
+`business_logic`、`competition`、`modeling`、`investment`、`structure` 的审查必须使用真实段落/模型验证：主论点→专题解释→跨行业利润分配→财务/资本回报→可证伪的投资含义。发现“只列公司案例”“观察到同时变化就写因果”“公式与固定成本定义不一致”“非主要子市场用主领域案例替代”“只能解释不能推断什么、缺乏正面条件判断”等问题时，形成实质 P0/P1 缺陷，而不能靠文字润色刷分。
+
+使用 argument_chains.csv / cross_sector_bridges.csv / model_logic_checks.csv 定位关键桥接断层，运行 scripts/argument_logic_gate.py 检查登记完整性，**必须实际审阅正文与原始财务数据**，不得将其 PASS 解释为真实因果识别或内部正式定稿。完整规范见 references/21-argument-architecture.md。
