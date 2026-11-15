@@ -1,0 +1,58 @@
+{
+  "title": "全球半导体产业全链深度研究",
+  "as_of": "2026-11-15",
+  "report_mode": "industry_full",
+  "central_question": "新增AI计算需求如何通过供需、竞争和资本投入改变九大半导体细分行业的增量经济利润？",
+  "modules": [
+    {
+      "id": "M00",
+      "priority": "HIGH",
+      "description": "产业主报告及跨环节利润分配"
+    },
+    {
+      "id": "S01",
+      "priority": "HIGH",
+      "description": "DRAM、HBM和NAND"
+    },
+    {
+      "id": "S02",
+      "priority": "HIGH",
+      "description": "GPU、ASIC和其他逻辑芯片"
+    },
+    {
+      "id": "S03",
+      "priority": "HIGH",
+      "description": "晶圆制造"
+    },
+    {
+      "id": "S04",
+      "priority": "HIGH",
+      "description": "设备"
+    },
+    {
+      "id": "S05",
+      "priority": "HIGH",
+      "description": "材料"
+    },
+    {
+      "id": "S06",
+      "priority": "HIGH",
+      "description": "先进封装与测试"
+    },
+    {
+      "id": "S07",
+      "priority": "HIGH",
+      "description": "模拟与功率"
+    },
+    {
+      "id": "S08",
+      "priority": "HIGH",
+      "description": "MCU、射频、传感与光电子"
+    },
+    {
+      "id": "S09",
+      "priority": "HIGH",
+      "description": "EDA和IP"
+    }
+  ]
+}

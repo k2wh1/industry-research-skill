@@ -1,4 +1,4 @@
-# industry-research v2.11 — 行业研究、公司研究与投资研究 Skill
+# industry-research v3-preview — 行业研究、公司研究与投资研究 Skill
 
 面向 Codex 及兼容 [Agent Skills](https://agentskills.io/specification) 的工具。以「核心争议 → 证据 → 产业/竞争 → 公司经营 → 财务预测 → 市场预期与估值 → 证伪与跟踪」为研究主线，而非把长报告目录填满。
 
@@ -20,6 +20,22 @@ investment_research_copilot/
 **个人级安装**：`$HOME/.agents/skills/industry-research/`。Windows PowerShell 里 `$HOME` 指 Windows 用户主目录；在 WSL2 Ubuntu 里 `$HOME` 是 Linux 的用户主目录，二者不同。
 
 无需 Python 包依赖（仅运行本包脚本需要 Python 3.10+）。Codex 可通过 `$industry-research` 明确调用；如果没有识别，重新启动 Codex 或确认工作目录位于对应项目树中。参见 [Codex Skill 官方文档](https://learn.chatgpt.com/docs/build-skills)。
+
+## v3-preview：实际执行研究的编排器（不是又一张验收表）
+
+**此前的核心缺口：** Skill 已有较完整研究流程和 QA，但并没有真正负责搜索资料、做分析、写报告、触发修订的可运行主控制器。原有数十项测试主要测试输入表格，并不能证明可独立完成一份产业研报。
+
+现在新增 `scripts/research_runtime.py`：状态持久化、真实外部 worker 调度、原始资料快照 SHA256/原文摘录核对、可复算模型算术验证、HIGH 章节引证检查、P0/P1 自动修订循环、Word/PDF 文件核验和恢复中断。使用 `scripts/codex_worker.py` 调用已安装授权的 Codex CLI，更多见 `references/22-runtime-orchestration.md`。
+
+Windows PowerShell：
+
+```powershell
+cd "$HOME\Documents\industry-research"
+python scripts/research_runtime.py init --brief assets/research-runtime-semi-example.json --workspace "$HOME\Documents\semi-research-run"
+python scripts/research_runtime.py run --workspace "$HOME\Documents\semi-research-run" --max-revisions 3 --worker python "$PWD\scripts\codex_worker.py"
+```
+
+**状态与限制：** 这只是执行引擎初版；真实搜证、分析、渲染由 Codex worker 完成，必须有访问资料和文件的权限。模拟 worker 测试只能证明调度/阻断/恢复，不证明真实半导体研究能力。最高可输出 `INTERNAL_RESEARCH_CANDIDATE`，真实内部正式研究定稿还需五项实质审查。不能在 ChatGPT 回答结束后继续后台工作，也不能把现有代码称为已满足完整端到端验收。
 
 ## v2.11：报告必须有主论点、跨行业利润迁移和财务逻辑闭环
 
@@ -226,6 +242,9 @@ v2.1 起新增 `references/10-writing-editorial.md`（正式报告写作、去�
 建议先让 Skill 为研究对象列出 3–7 个关键争议和覆盖计划，再让它优先解决最影响预测和投资结论的问题；可逐章研究，但不能绕过证据和反方检验。Skill 可以给出条件化投资研究结论，不代表保证收益或适合个人账户的投资建议。
 
 ## 版本
+
+`v3-preview` — 首次引入有状态的执行器、Codex 工作适配器、源快照/模型/引证交叉核验和真实自动返工的工作流；尚待真实研报验收，不代表已实现完整端到端产品。
+
 
 `v2.11.0` — 主论点/细分结论/跨产业利润分配/模型经济边界/投资判断统一论证；对质量打分和定稿验收增加实质性逻辑检查。
 

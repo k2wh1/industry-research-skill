@@ -3,7 +3,7 @@ name: industry-research
 description: 对行业、产业链、产业主题及上市公司进行证据驱动的深度研究，建立产品与商业模式、市场规模及供需、竞争与利润池、公司财务与资本回报、盈利预测、市场预期、估值、风险证伪及持续跟踪的完整研究链。适用于行业深度、公司首次覆盖、产业专题及定期跟踪；可输出可追溯研究报告、模型假设与证据账本。当任务只是简单事实查询、SQL教学、代码调试或短时市场快讯时，不强制执行完整流程。
 ---
 
-# Industry Research v2.11：自主执行—反思—修订—复验闭环
+# Industry Research v3-preview：自主执行—反思—修订—复验闭环
 
 ## 身份与最终目标
 
@@ -13,7 +13,7 @@ description: 对行业、产业链、产业主题及上市公司进行证据驱�
 
 **必须分清**行业有成长性、企业能赚钱、企业能创造经济利润、当前股票有投资价值这四个不同命题。行业总报告必须建立可证伪的产业利润分配总论点，九个或其他重要专题的经济机制与反证要回写到总论点，不能用独立案例拼接冒充因果闭环。研究可以得出「目前无法判断」；不能为凑齐报告而虚构数据、预测、评级或目标价。
 
-## 优先执行契约（v2.11：论证闭环与正式定稿并重）
+## 优先执行契约（v3-preview：先真实执行研究，再审查并交付）
 
 正式研究及已有研报重构应在**同一次用户委托**内自主执行：`PLAN → EXECUTE → AUDIT → REFLECTION → DIAGNOSE → REVISION → VERIFY → REFLECTION...`。**生成 Word/PDF、写完章节、脚本 PASS 或发现问题并在回复列出，都不是研究任务的结束条件。** 只要存在当前能够修复的 P0/P1 重大缺陷，就继续修改并复核，无需用户再次说“继续”。执行前必须读取 `references/17-autonomous-execution.md`；与本 Skill 其他段落的轮次或停止措辞冲突时，以该协议及数据真实性约束为准。
 
@@ -225,6 +225,16 @@ description: 对行业、产业链、产业主题及上市公司进行证据驱�
 8. **生成审阅资产。** `argument_scope.csv`、`argument_chains.csv`、`cross_sector_bridges.csv`、`model_logic_checks.csv`；运行 `python scripts/argument_logic_gate.py --scope outputs/argument_scope.csv --claims outputs/argument_chains.csv --bridges outputs/cross_sector_bridges.csv --models outputs/model_logic_checks.csv --report-type industry_full --out outputs/argument_logic_gate_result.json`。此检查器只能验证登记关系和必填内容，不能自行证明外部事实、真正因果或模型正确，仍需实际阅读全文并复算。
 
 **与 v2.10 关系：** 论证中存在影响核心结论的 P0/P1 断层时，不能因五项验收表已经填写 PASS 就宣称正式定稿；需修复该断层并整体复审。没有新增重要问题且五项实质验收通过时，应正常定稿而非无限增加版本。
+## 4K. 实际运行的端到端执行器（v3-preview）
+
+**启动深度研究时先读取 `references/22-runtime-orchestration.md`。** v2.11 以前多为 Markdown 约束与 CSV 校验，不能把“自动审查”当作“自动研究”。现在新增 `scripts/research_runtime.py` 和 `scripts/codex_worker.py`，提供一次可运行、可恢复、支持复审和返工的前台流程。若用户希望从研究 Brief 自动生成报告，优先选择带真实研究权限的执行者运行此工作流，而不是只输出研究计划/质量问题清单。
+
+- **执行链：** PLAN（所有 HIGH 范围任务）→ RESEARCH（真实来源快照及精确摘录）→ ANALYZE（可复算计算）→ DRAFT（有引用的整稿）→ REVIEW（实质审读）→ REVISE/REVIEW（重大缺陷自动返工）→ RENDER（Word/PDF）。每阶段必须产生实际文件；没有工具或材料时以错误/阻断结束，不得伪造。
+- **持久状态：** `state.json` 保存当前阶段、已完成任务、复核轮次和证据，用户可以在同一工作目录恢复被中断的工作；不等于离线后台 Agent。
+- **真实研究主体：** 该执行器需要外部可信 worker，提供 `codex_worker.py` 示例适配器。用户在本地终端调用时须安装并授权 Codex；在已经运行的 Codex 中不能递归默认启动新 Codex。
+- **有限独立校验：** 源文本快照 SHA256、原句存在性、来源关联、四则运算、HIGH 专题引证覆盖、P0/P1 审核与文件格式校验。它们检查真实产物的一部分，却不等于真实财报正确、因果成立、中文排版无误或独立机构终审。
+- **诚实的完成状态：** 现阶段工作流最高为 `INTERNAL_RESEARCH_CANDIDATE`，而非 `FORMAL_RESEARCH_FINAL`。正式定稿仍需要 v2.10 的五项实质验收、重要旧来源复核和完整 Word/PDF 视觉检查。
+- **尚未完成的能力不得冒充已经实现：** 分专题自动调度、针对真实财报的抓取和提取、全稿事实覆盖率自动检查、跨报告模型校准、90+页真实行业报告验收，均须继续工程实现和真实场景测试。离线集成测试不等于真实端到端研究。
 ## 5. 交付协议
 
 默认使用专业中文。**在撰写正式报告前必须读取 `references/10-writing-editorial.md`；全行业深度还必须读取 `references/11-depth-completeness.md`、`12-data-audit.md`、`13-independent-modeling.md`、`14-analytical-depth.md` 与 `15-visualization.md`，依次执行原始数据审计、独立建模、分析深度、研究完整性、图表与编辑排版五道关卡。** 内部研究表、五力表、反证表、假设表不得不加整理地复制为最终正文；正文优先连贯论述，表格只承载真正需要横向比较的信息。避免夸张标题、统一句式、密集粗体和脱离依据的“市场在定价”推断。模板用于提示必需内容，而不是机械输出固定章节：

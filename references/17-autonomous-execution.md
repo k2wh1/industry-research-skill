@@ -109,3 +109,7 @@ EXTERNAL_BLOCKED 必须精确绑定阻断模块；其他独立 HIGH 子领域继
 ## v2.10｜明确正式定稿终点
 
 对五项实质门槛进行完整核验之后，应当交付正式内部研究定稿，而非因为未来可继续研究、未披露产品级 ROIC 或评分不足满分而无限重新立项。不存在 AI 自动独立审签；参照 references/20-formal-finalization.md。
+
+## v3-preview｜不再仅把状态机写在文档里
+
+在外部终端使用脚本 `research_runtime.py` 和具有真实研究权限的 worker，实际执行各阶段、保存可恢复任务状态，并对来源快照/摘录、算术模型、HIGH 范围正文引用和可行动问题返工。不得把 CLI 执行成功或测试假数据报告误称真实行业报告终审。见 `references/22-runtime-orchestration.md`。
