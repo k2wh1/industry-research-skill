@@ -1,4 +1,4 @@
-# industry-research v2.8 — 行业研究、公司研究与投资研究 Skill
+# industry-research v2.9 — 行业研究、公司研究与投资研究 Skill
 
 面向 Codex 及兼容 [Agent Skills](https://agentskills.io/specification) 的工具。以「核心争议 → 证据 → 产业/竞争 → 公司经营 → 财务预测 → 市场预期与估值 → 证伪与跟踪」为研究主线，而非把长报告目录填满。
 
@@ -20,6 +20,12 @@ investment_research_copilot/
 **个人级安装**：`$HOME/.agents/skills/industry-research/`。Windows PowerShell 里 `$HOME` 指 Windows 用户主目录；在 WSL2 Ubuntu 里 `$HOME` 是 Linux 的用户主目录，二者不同。
 
 无需 Python 包依赖（仅运行本包脚本需要 Python 3.10+）。Codex 可通过 `$industry-research` 明确调用；如果没有识别，重新启动 Codex 或确认工作目录位于对应项目树中。参见 [Codex Skill 官方文档](https://learn.chatgpt.com/docs/build-skills)。
+
+## v2.9：双向核对文字趋势，外部阻断必须测试替代方案
+
+增加 `references/19-substantive-loop.md`、`scripts/substantive_stop_gate.py`、定量时间序列/结论映射表和外部阻断替代研究表。AWS 利润率2023→2024上升、2024→2025下降，不能再被文字写成“连续改善”。模型只对登记的结论进行数学验证；超出支持的比较谓词需另行验证。任何实际可行的替代研究都必须执行，不能仅因公司产品 ROIC 未披露而停止其他行业研究。
+
+回归用例已在本地 5/5 通过（文档一致性有限测试，不代表全仓测试通过或来源核验）。
 
 ## v2.8：Reflection 必须触发具体研究行动
 
@@ -207,6 +213,9 @@ v2.1 起新增 `references/10-writing-editorial.md`（正式报告写作、去�
 建议先让 Skill 为研究对象列出 3–7 个关键争议和覆盖计划，再让它优先解决最影响预测和投资结论的问题；可逐章研究，但不能绕过证据和反方检验。Skill 可以给出条件化投资研究结论，不代表保证收益或适合个人账户的投资建议。
 
 ## 版本
+
+`v2.9.0` — 定量叙述与原始时间序列双向核验、局部数据阻断前替代方案实查、禁止可行动问题提前交付。
+
 
 `v2.8.0` — 强制“Reflection→Action→Execute→Verify”，来源审计台账、评分差异化任务和文稿结构审校，不再仅靠增加版本号或高分结束。
 
