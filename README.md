@@ -1,4 +1,4 @@
-# industry-research v2.10 — 行业研究、公司研究与投资研究 Skill
+# industry-research v2.11 — 行业研究、公司研究与投资研究 Skill
 
 面向 Codex 及兼容 [Agent Skills](https://agentskills.io/specification) 的工具。以「核心争议 → 证据 → 产业/竞争 → 公司经营 → 财务预测 → 市场预期与估值 → 证伪与跟踪」为研究主线，而非把长报告目录填满。
 
@@ -20,6 +20,14 @@ investment_research_copilot/
 **个人级安装**：`$HOME/.agents/skills/industry-research/`。Windows PowerShell 里 `$HOME` 指 Windows 用户主目录；在 WSL2 Ubuntu 里 `$HOME` 是 Linux 的用户主目录，二者不同。
 
 无需 Python 包依赖（仅运行本包脚本需要 Python 3.10+）。Codex 可通过 `$industry-research` 明确调用；如果没有识别，重新启动 Codex 或确认工作目录位于对应项目树中。参见 [Codex Skill 官方文档](https://learn.chatgpt.com/docs/build-skills)。
+
+## v2.11：报告必须有主论点、跨行业利润迁移和财务逻辑闭环
+
+新增 `references/21-argument-architecture.md`、四张结构审阅表和 `scripts/argument_logic_gate.py`：行业总稿必须提出核心利润分配问题，九个或其他重要专题应分别贡献事实、经营机制、财务传导、反方证据与证伪条件，最终回写主报告。不能只把各公司的财务案例拼接。
+
+模型须统一固定/变动成本、期间、CAPEX 与折旧口径，并进行反例测试；例如 GPU/ASIC 临界量公式必须同时计入两方的固定成本，除非明确论证其中一方为零。单年景气 ROIC 不得冒充稳态资本回报；投资判断须连接产业增长、企业利润、经济利润及可能的预期差。
+
+降低正文重复的免责声明和否定式句子，但不机械限制“不能”等必要审慎措辞。正文优先回答“根据证据我们能判断什么、为何、何时失效”。本次新增 6 个可运行的结构测试；脚本只能审查已登记字段，不能自动保证真实论证质量。
 
 ## v2.10：正式研究定稿不是无限 STAGED
 
@@ -218,6 +226,9 @@ v2.1 起新增 `references/10-writing-editorial.md`（正式报告写作、去�
 建议先让 Skill 为研究对象列出 3–7 个关键争议和覆盖计划，再让它优先解决最影响预测和投资结论的问题；可逐章研究，但不能绕过证据和反方检验。Skill 可以给出条件化投资研究结论，不代表保证收益或适合个人账户的投资建议。
 
 ## 版本
+
+`v2.11.0` — 主论点/细分结论/跨产业利润分配/模型经济边界/投资判断统一论证；对质量打分和定稿验收增加实质性逻辑检查。
+
 
 `v2.10.0` — 固定验收标准、区分正式研究定稿与独立终审、允许有边界的非关键数据缺口、交付后转入滚动更新。
 
