@@ -26,11 +26,15 @@ PLAN → EXECUTE → SOURCE AUDIT → REFLECT WHOLE REPORT → GENERATE ACTION Q
 必须配合已有 coverage_stop_gate.py、autonomous_loop_gate.py、score_report.py、revision_gate.py、run_qa.py 使用。新增：
     python scripts/research_action_gate.py --report outputs/research_report.md --evidence outputs/evidence_ledger.csv --source-review outputs/source_review.csv --actions outputs/reflection_actions.csv --coverage outputs/industry_coverage.csv --defects outputs/revision_defect_ledger.csv --scorecard outputs/quality_scorecard.csv --gates outputs/quality_gates.csv --out outputs/research_action_gate_result.json
 
-此工具只做输入记录一致性检查，不能验证外部来源真伪或证明 AI 真的完成研究；不得用 PASS 冒充正式终审。在 SOURCE REVIEW 未完全核实、质量硬门槛 UNKNOWN 或 3/3 分析不足时，最多 STAGED；如果仍有可执行 OPEN 项，则不得正常终止（真实限制按 STOP_LIMIT 留痕）。
+此工具只做输入记录一致性检查，不能验证外部来源真伪或证明 AI 真的完成研究；不得用 PASS 冒充正式终审。在重要来源未完成实际核验、核心质量门槛 UNKNOWN 或高优先级研究不足时，最多 STAGED；如果仍有可执行 OPEN 项，则不得正常终止（真实限制按 STOP_LIMIT 留痕）。
 
 ## 终止逻辑
-- **正常验收**：P0/P1 实质问题全部有修复+复验，HIGH 均有可检验证据，引用不存在未核验的核心事实，图表财务模型可复算，去重整合完成，所有硬门槛 PASS，完成全稿复查；进入“等待独立复核”，不是 RELEASED。
+- **正常验收**：P0/P1 实质问题全部有修复+复验，HIGH 均有可检验证据，引用不存在未核验的核心事实，图表财务模型可复算，去重整合完成，所有实质硬门槛 PASS，完成全稿复查；按 v2.10 五项审查进入内部正式研究定稿，真正独立审阅与机构批准另行要求。
 - **真正阻断**：逐项说明实际公开资料尝试/无法取得之处、模型可以替代的部分、未阻断的研究全部已继续。阶段性文件允许交付但不得称完成研究。
 - **执行资源限制**：明确 STOP_LIMIT、保留具体未完成问题及可复现产物。这是执行限制，不代表研究质量合格。
 
 需要多轮，但**不能为了做三轮而做三轮**；每轮都应体现新增核验、经营判断或修正结论。
+
+## v2.10｜外部数据限制不等于自动停稿
+
+已获得公开替代证据并完成可靠的经营研究时，无法披露的非关键内部指标经重要性审查、限制推论和明确披露后，不阻断正式内部定稿。关键缺口继续阻断。详细协议见 references/20-formal-finalization.md。
