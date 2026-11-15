@@ -1,4 +1,4 @@
-# industry-research v2.4 — 行业研究、公司研究与投资研究 Skill
+# industry-research v2.6 — 行业研究、公司研究与投资研究 Skill
 
 面向 Codex 及兼容 [Agent Skills](https://agentskills.io/specification) 的工具。以「核心争议 → 证据 → 产业/竞争 → 公司经营 → 财务预测 → 市场预期与估值 → 证伪与跟踪」为研究主线，而非把长报告目录填满。
 
@@ -20,6 +20,20 @@ investment_research_copilot/
 **个人级安装**：`$HOME/.agents/skills/industry-research/`。Windows PowerShell 里 `$HOME` 指 Windows 用户主目录；在 WSL2 Ubuntu 里 `$HOME` 是 Linux 的用户主目录，二者不同。
 
 无需 Python 包依赖（仅运行本包脚本需要 Python 3.10+）。Codex 可通过 `$industry-research` 明确调用；如果没有识别，重新启动 Codex 或确认工作目录位于对应项目树中。参见 [Codex Skill 官方文档](https://learn.chatgpt.com/docs/build-skills)。
+
+## v2.6：同任务自动 Execute → Reflection → Revision
+
+**不需要用户一遍遍说“继续”。** 初稿后立即审查整份报告；若发现当前能修复的 P0/P1 缺陷，必须同一次任务内执行修订，并生成新一轮 Reflection 和证据；不能把已知问题放在回复结尾，等用户下达下一条指令。完成 Word/PDF 不等于验收。外部资料不可取得时，明确 `EXTERNAL_BLOCKED` 并保持 `STAGED`，不能编造数据。执行资源不足时说明 `STOP_LIMIT`，不承诺后台工作。
+
+新增 `references/17-autonomous-execution.md`、`scripts/autonomous_loop_gate.py`、`assets/execution-cycle-template.csv` 与回归测试。记录每轮研究稿、Reflection、修订版本和复验引用。运行：
+
+```bash
+python scripts/autonomous_loop_gate.py --trace outputs/execution_cycle.csv --require-ready --out outputs/loop_gate_result.json
+python scripts/revision_gate.py --ledger outputs/revision_defect_ledger.csv --rounds outputs/quality_scorecard.csv --mode handoff
+python -m unittest discover -s tests -v
+```
+
+检查器只验证记录完整性，不证明事实真实性，也不自动授予正式发布权限。旧报告修订仍应保留独立证据与 source→destination 内容映射。
 
 ## v2.4：质量评分—研究迭代闭环
 
@@ -183,6 +197,9 @@ v2.1 起新增 `references/10-writing-editorial.md`（正式报告写作、去�
 建议先让 Skill 为研究对象列出 3–7 个关键争议和覆盖计划，再让它优先解决最影响预测和投资结论的问题；可逐章研究，但不能绕过证据和反方检验。Skill 可以给出条件化投资研究结论，不代表保证收益或适合个人账户的投资建议。
 
 ## 版本
+
+`v2.6.0` — 同一次任务内自动研究、反思、修订与全稿复验；新增执行轨迹闸门、分阶段停止状态和回归测试，禁止仅生成版本后交付。
+
 
 `v2.3.0` — 增加数据与模型审计、深度分级、图表来源管理、集成 QA；严格区分自动检查与真实事实核验。
 
