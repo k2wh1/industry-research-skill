@@ -3,7 +3,7 @@ name: industry-research
 description: 对行业、产业链、产业主题及上市公司进行证据驱动的深度研究，建立产品与商业模式、市场规模及供需、竞争与利润池、公司财务与资本回报、盈利预测、市场预期、估值、风险证伪及持续跟踪的完整研究链。适用于行业深度、公司首次覆盖、产业专题及定期跟踪；可输出可追溯研究报告、模型假设与证据账本。当任务只是简单事实查询、SQL教学、代码调试或短时市场快讯时，不强制执行完整流程。
 ---
 
-# Industry Research v2.7：自主执行—反思—修订—复验闭环
+# Industry Research v2.8：自主执行—反思—修订—复验闭环
 
 ## 身份与最终目标
 
@@ -13,7 +13,7 @@ description: 对行业、产业链、产业主题及上市公司进行证据驱�
 
 **必须分清**行业有成长性、企业能赚钱、企业能创造经济利润、当前股票有投资价值这四个不同命题。研究可以得出「目前无法判断」；不能为凑齐报告而虚构数据、预测、评级或目标价。
 
-## 优先执行契约（v2.7：研究覆盖约束与自动返工）
+## 优先执行契约（v2.8：反思即执行、来源实质审计）
 
 正式研究及已有研报重构应在**同一次用户委托**内自主执行：`PLAN → EXECUTE → AUDIT → REFLECTION → DIAGNOSE → REVISION → VERIFY → REFLECTION...`。**生成 Word/PDF、写完章节、脚本 PASS 或发现问题并在回复列出，都不是研究任务的结束条件。** 只要存在当前能够修复的 P0/P1 重大缺陷，就继续修改并复核，无需用户再次说“继续”。执行前必须读取 `references/17-autonomous-execution.md`；与本 Skill 其他段落的轮次或停止措辞冲突时，以该协议及数据真实性约束为准。
 
@@ -180,6 +180,18 @@ description: 对行业、产业链、产业主题及上市公司进行证据驱�
 
 在第4E节规定的 `autonomous_loop_gate.py` 之外，本闸门单独执行：前者检查“有没有形成修订版本链”，后者检查“是否仍有可行动高优先级未完成内容”。两者都通过也不自动产生 `RELEASED`。
 
+## 4G. Reflection→Research Action 的强制执行门槛（v2.8）
+
+**正式深度研究必须在开始前读取 `references/18-research-action-loop.md`。** 发现问题后不得直接交付问题清单：在同一次用户任务内转换为 `reflection_actions.csv` 的可执行研究任务，并按优先级立即开展。每个任务需要事实位置、具体下一步、修改稿定位、复核证据。外部数据缺失仅阻断关联子问题，不得停止其他任务。执行资源确实有限时用 STOP_LIMIT，如实披露但不冒充完成。
+
+**新增 source_review.csv：** 所有正文和参考文献中的重要 `E###` 必须逐条记录是否确实打开原文及核验位置。只有链接而未读资料一律 `UNVERIFIED`，不能把“有证据编号”写成“经过核验”。正文若仍有“原始资料X”、`2026-xx` 等占位，正式验收阻断。
+
+**质量评分不直接调度模板化动作。** 八维质量缺陷必须匹配不同的研究行动：数据→核源，模型→校准，业务→补经营链，竞争→同口径公司比较，结构→重组章节，反方→条件压力测试。复制粘贴的统一下一步不算有效 Reflection。对 HIGH 覆盖，`3/3` 为可检验研究的目标；`2/3` 不应无理由标记终审完成。
+
+追加运行：`python scripts/research_action_gate.py --report outputs/research_report.md --evidence outputs/evidence_ledger.csv --source-review outputs/source_review.csv --actions outputs/reflection_actions.csv --coverage outputs/industry_coverage.csv --defects outputs/revision_defect_ledger.csv --scorecard outputs/quality_scorecard.csv --gates outputs/quality_gates.csv --out outputs/research_action_gate_result.json`
+
+**本检查器只审计所填材料的格式与一致性；不验证网页真实性、不推断真的自主思考，也不能自动判定 RELEASED。** 如果未执行此检查，不得声称工作流验收已通过；若报告状态 STAGED，必须说明究竟是证据不可得还是执行资源受限，以及哪些可行动问题尚未完成。
+
 ## 5. 交付协议
 
 默认使用专业中文。**在撰写正式报告前必须读取 `references/10-writing-editorial.md`；全行业深度还必须读取 `references/11-depth-completeness.md`、`12-data-audit.md`、`13-independent-modeling.md`、`14-analytical-depth.md` 与 `15-visualization.md`，依次执行原始数据审计、独立建模、分析深度、研究完整性、图表与编辑排版五道关卡。** 内部研究表、五力表、反证表、假设表不得不加整理地复制为最终正文；正文优先连贯论述，表格只承载真正需要横向比较的信息。避免夸张标题、统一句式、密集粗体和脱离依据的“市场在定价”推断。模板用于提示必需内容，而不是机械输出固定章节：
@@ -228,7 +240,8 @@ python scripts/run_qa.py --mode industry_full --report research_outputs/example/
 15. 是否在 `model_manifest.json` 列出校准目标和验证目标，排除循环验证？模型的敏感性是否可复算？
 16. 核心章节是否经过深度 0–3 分级；利润率是否被误称为利润池；竞争份额与资本回报是否拥有真实分母和机制？
 17. 是否建立图表方案、来源与数值审计信息，并对 Word/PDF 进行实际逐页排版检查（若有）？
-18. 是否在本次任务实际完成 Execute→Reflection→Revise→Verify 的必要轮次，保留版本链，并对修订后的**完整报告**重新审查？是否仍有可行动的 P0/P1 被推迟给用户？
+18. 是否逐项核验重要来源、清除参考文献占位符，并用不同的研究动作处理各类缺陷？
+19. 是否在本次任务实际完成 Execute→Reflection→Revise→Verify 的必要轮次，保留版本链，并对修订后的**完整报告**重新审查？是否仍有可行动的 P0/P1 被推迟给用户？
 
 可运行 `scripts/quality_check.py` 和 `scripts/completeness_check.py` 做**有限的结构、引用、覆盖状态与基本时点检查**。覆盖检查在仍有 partial/missing、重要证据缺失、要求的量化产出未落实、范围过窄时不允许标为“结构上已完成”。即使通过，也**不等于研究已完成**：研究者仍须检查分类树是否遗漏真实子行业、原始证据是否可信、分析是否充分。
 
