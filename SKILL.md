@@ -3,7 +3,7 @@ name: industry-research
 description: 对行业、产业链、产业主题及上市公司进行证据驱动的深度研究，建立产品与商业模式、市场规模及供需、竞争与利润池、公司财务与资本回报、盈利预测、市场预期、估值、风险证伪及持续跟踪的完整研究链。适用于行业深度、公司首次覆盖、产业专题及定期跟踪；可输出可追溯研究报告、模型假设与证据账本。当任务只是简单事实查询、SQL教学、代码调试或短时市场快讯时，不强制执行完整流程。
 ---
 
-# Industry Research v2.8：自主执行—反思—修订—复验闭环
+# Industry Research v2.9：自主执行—反思—修订—复验闭环
 
 ## 身份与最终目标
 
@@ -13,7 +13,7 @@ description: 对行业、产业链、产业主题及上市公司进行证据驱�
 
 **必须分清**行业有成长性、企业能赚钱、企业能创造经济利润、当前股票有投资价值这四个不同命题。研究可以得出「目前无法判断」；不能为凑齐报告而虚构数据、预测、评级或目标价。
 
-## 优先执行契约（v2.8：反思即执行、来源实质审计）
+## 优先执行契约（v2.9：事实-计算-叙述反查、替代研究后才允许阻断）
 
 正式研究及已有研报重构应在**同一次用户委托**内自主执行：`PLAN → EXECUTE → AUDIT → REFLECTION → DIAGNOSE → REVISION → VERIFY → REFLECTION...`。**生成 Word/PDF、写完章节、脚本 PASS 或发现问题并在回复列出，都不是研究任务的结束条件。** 只要存在当前能够修复的 P0/P1 重大缺陷，就继续修改并复核，无需用户再次说“继续”。执行前必须读取 `references/17-autonomous-execution.md`；与本 Skill 其他段落的轮次或停止措辞冲突时，以该协议及数据真实性约束为准。
 
@@ -191,6 +191,16 @@ description: 对行业、产业链、产业主题及上市公司进行证据驱�
 追加运行：`python scripts/research_action_gate.py --report outputs/research_report.md --evidence outputs/evidence_ledger.csv --source-review outputs/source_review.csv --actions outputs/reflection_actions.csv --coverage outputs/industry_coverage.csv --defects outputs/revision_defect_ledger.csv --scorecard outputs/quality_scorecard.csv --gates outputs/quality_gates.csv --out outputs/research_action_gate_result.json`
 
 **本检查器只审计所填材料的格式与一致性；不验证网页真实性、不推断真的自主思考，也不能自动判定 RELEASED。** 如果未执行此检查，不得声称工作流验收已通过；若报告状态 STAGED，必须说明究竟是证据不可得还是执行资源受限，以及哪些可行动问题尚未完成。
+
+## 4H. 定量结论反查与不可得数据的替代研究（v2.9 强制）
+
+正式深度研究与旧稿审查时必须读取 `references/19-substantive-loop.md`。两项要求优先于简单增加研究轮次：
+
+- **数据→叙述双向检查**：将“连续增长/改善、加速、下降、反转、领先”等核心比较性语句与原始财务数据、计算结果、期间及口径连接，核验文字是否准确。对支持的关系写入 `series.csv`、`quantitative_claims.csv` 并执行 `scripts/substantive_stop_gate.py`；其他比较词需补人工/独立计算核验记录，不得默认为通过。不得只复算表格忽略正文事实矛盾。
+- **EXTERNAL_BLOCKED 不得成为退路**：将每个外部阻断限定到具体缺失问题，至少实际查验两个有差别的公开替代研究方案并记录 `blocker_alternatives.csv`。任何 FEASIBLE 替代方案必须在当前任务继续执行；被阻断的公司级产品 ROIC 不能阻止云存储/Serverless/MaaS/SaaS 的公开 TCO 或单位经济研究。缺少足够外部资料时仍保留局部条件判断。
+- **关闭缺陷以实际研究增量为准**：修订应产生可检查的数据源定位、公式/模型、更新正文、旧问题复核及新缺陷审查；不得仅凭轮次、页数或质量评分提高宣称完成。
+- **脚本能力边界**：新闸门只检查已登记数学关系和替代方法记录，不证明来源真实性、未登记段落无误或终审资格。参考来源实际核验仍用 v2.8 source_review.csv。 
+- **停止前检查**：`python scripts/substantive_stop_gate.py --series outputs/series.csv --claims outputs/quantitative_claims.csv --blockers outputs/blocker_alternatives.csv --out outputs/substantive_gate_result.json`，并连同已有 v2.8 研究行动、v2.7 覆盖和 v2.6 循环闸门复核。任何仍可行动的重要任务不得因其他项目 EXTERNAL_BLOCKED 被跳过。
 
 ## 5. 交付协议
 
