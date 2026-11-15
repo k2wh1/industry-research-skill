@@ -1,4 +1,4 @@
-# industry-research v2.9 — 行业研究、公司研究与投资研究 Skill
+# industry-research v2.10 — 行业研究、公司研究与投资研究 Skill
 
 面向 Codex 及兼容 [Agent Skills](https://agentskills.io/specification) 的工具。以「核心争议 → 证据 → 产业/竞争 → 公司经营 → 财务预测 → 市场预期与估值 → 证伪与跟踪」为研究主线，而非把长报告目录填满。
 
@@ -21,6 +21,11 @@ investment_research_copilot/
 
 无需 Python 包依赖（仅运行本包脚本需要 Python 3.10+）。Codex 可通过 `$industry-research` 明确调用；如果没有识别，重新启动 Codex 或确认工作目录位于对应项目树中。参见 [Codex Skill 官方文档](https://learn.chatgpt.com/docs/build-skills)。
 
+## v2.10：正式研究定稿不是无限 STAGED
+
+新增 `references/20-formal-finalization.md`、`scripts/formal_final_gate.py`、五项验收表和关键/非关键数据缺口表。先固定研究范围，再完成事实审计、研究深度、可证伪判断、编辑整理和最终全稿复核；有证据支持且已披露的非关键产品级数据缺失不阻止正式内部研究定稿。重大缺陷和核心证据缺失继续阻断。正式研究定稿与独立机构审核严格区分，后续季度变化用 UPDATE 迭代而不是无限停留阶段性版本。
+
+执行检查：`python scripts/formal_final_gate.py --report outputs/research_report.md --acceptance outputs/formal_final_acceptance.csv --gaps outputs/formal_final_gaps.csv --defects outputs/revision_defect_ledger.csv --coverage outputs/industry_coverage.csv --sources outputs/source_review.csv --out outputs/formal_final_gate_result.json`。脚本只验证台账一致性，不会核验外部事实或授予独立机构签章。
 ## v2.9：双向核对文字趋势，外部阻断必须测试替代方案
 
 增加 `references/19-substantive-loop.md`、`scripts/substantive_stop_gate.py`、定量时间序列/结论映射表和外部阻断替代研究表。AWS 利润率2023→2024上升、2024→2025下降，不能再被文字写成“连续改善”。模型只对登记的结论进行数学验证；超出支持的比较谓词需另行验证。任何实际可行的替代研究都必须执行，不能仅因公司产品 ROIC 未披露而停止其他行业研究。
@@ -213,6 +218,9 @@ v2.1 起新增 `references/10-writing-editorial.md`（正式报告写作、去�
 建议先让 Skill 为研究对象列出 3–7 个关键争议和覆盖计划，再让它优先解决最影响预测和投资结论的问题；可逐章研究，但不能绕过证据和反方检验。Skill 可以给出条件化投资研究结论，不代表保证收益或适合个人账户的投资建议。
 
 ## 版本
+
+`v2.10.0` — 固定验收标准、区分正式研究定稿与独立终审、允许有边界的非关键数据缺口、交付后转入滚动更新。
+
 
 `v2.9.0` — 定量叙述与原始时间序列双向核验、局部数据阻断前替代方案实查、禁止可行动问题提前交付。
 
